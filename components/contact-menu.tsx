@@ -4,8 +4,10 @@ import type { ElementType } from "react";
 import { Crown, MapPin, Navigation, Phone, X } from "lucide-react";
 
 import {
+  FacebookIcon,
   SnapchatIcon,
   TiktokIcon,
+  ViberIcon,
   WhatsappIcon,
 } from "@/components/brand-icons";
 import { Button } from "@/components/ui/button";
@@ -16,11 +18,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
+  FACEBOOK_URL,
   MAP_URL,
   SHOP_ADDRESS,
   SHOP_PHONE,
   SNAPCHAT_URL,
   TIKTOK_URL,
+  VIBER_URL,
   WHATSAPP_URL,
 } from "@/lib/links";
 
@@ -37,6 +41,18 @@ const SOCIAL_LINKS: SocialLink[] = [
     href: WHATSAPP_URL,
     icon: WhatsappIcon,
     chipClass: "bg-[#25D366] text-white",
+  },
+  {
+    name: "Viber",
+    href: VIBER_URL,
+    icon: ViberIcon,
+    chipClass: "bg-[#7360F2] text-white",
+  },
+  {
+    name: "Facebook",
+    href: FACEBOOK_URL,
+    icon: FacebookIcon,
+    chipClass: "bg-[#1877F2] text-white",
   },
   {
     name: "TikTok",
@@ -151,7 +167,7 @@ export function ContactMenu() {
             <p className="px-1 pb-2 pt-1 text-[10px] font-semibold tracking-[0.18em] text-muted-foreground">
               بەدوامان بکەوە
             </p>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="flex flex-wrap justify-center gap-2">
               {SOCIAL_LINKS.map((link) => {
                 const Icon = link.icon;
                 return (
@@ -162,7 +178,7 @@ export function ContactMenu() {
                     rel="noopener noreferrer"
                     aria-label={link.name}
                     title={link.name}
-                    className="group flex flex-col items-center gap-1.5 rounded-md border border-border bg-background px-1 py-2.5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-sm"
+                    className="group flex w-[31%] flex-none flex-col items-center gap-1.5 rounded-md border border-border bg-background px-1 py-2.5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-sm"
                   >
                     <span
                       className={`flex size-9 items-center justify-center rounded-full ${link.chipClass}`}

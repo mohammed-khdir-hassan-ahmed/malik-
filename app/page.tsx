@@ -56,13 +56,13 @@ function Hero({
 
   return (
     <section className="border-b border-border">
-      <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 md:py-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
-        {/* دەق */}
-        <div className="flex flex-col items-start gap-5">
-          <h1 className="font-kurdish-display text-balance text-[2.6rem] font-bold leading-[1.35] tracking-tight sm:text-5xl md:text-[3.6rem] md:leading-[1.4]">
+      <div className="mx-auto grid max-w-6xl grid-cols-[1.15fr_0.85fr] items-center gap-3.5 px-4 py-6 sm:gap-10 sm:px-6 sm:py-12 md:grid-cols-[1.05fr_0.95fr] md:py-16 lg:gap-14">
+        {/* دەق — لە ڕاستەوخۆ (RTL) */}
+        <div className="flex flex-col items-start gap-3 sm:gap-5">
+          <h1 className="font-kurdish-display text-balance text-[1.55rem] font-bold leading-[1.45] tracking-tight sm:text-[2.4rem] sm:leading-[1.35] md:text-[3.2rem] md:leading-[1.4] lg:text-[3.6rem]">
             {BRAND}
           </h1>
-          <p className="max-w-md text-[0.95rem] leading-loose text-muted-foreground">
+          <p className="max-w-md text-[0.8rem] leading-relaxed text-muted-foreground sm:text-[0.95rem] sm:leading-loose">
             نیشانەی جوانی و بەرزکردنەوەی شوێنەکەت — دیکۆراتیەکی تایبەت بە دوو
             ستایلی جیاواز: <span className="font-medium text-foreground">بەشی مەغریبی</span> و{" "}
             <span className="font-medium text-foreground">بەشی ئەسترۆپۆڵ</span>.
@@ -127,10 +127,10 @@ function Hero({
               <img
                 src={getImageUrl(featured)}
                 alt={`وێنەی هەڵبژاردە لە ${featuredLabel}`}
-                className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04] md:aspect-[5/5] lg:aspect-[4/4.6]"
+                className="aspect-[3/4] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04] sm:aspect-[4/3] md:aspect-[5/5] lg:aspect-[4/4.6]"
               />
             ) : (
-              <div className="flex aspect-[4/3] flex-col items-center justify-center gap-2 bg-muted/50 text-muted-foreground md:aspect-[5/5]">
+              <div className="flex aspect-[3/4] flex-col items-center justify-center gap-2 bg-muted/50 text-muted-foreground sm:aspect-[4/3] md:aspect-[5/5]">
                 <Crown className="size-8 opacity-40" />
                 <p className="text-xs">وێنەکە بەم زووانە دادەنرێت</p>
               </div>
@@ -138,15 +138,15 @@ function Hero({
           </div>
           {/* کارتی ژمارە — هەڵفڕیو لەسەر وێنە */}
           {featured ? (
-            <div className="pointer-events-none absolute bottom-4 start-4 z-10 flex items-center gap-2.5 rounded-md bg-background/95 py-2 pe-3.5 ps-2 shadow-md ring-1 ring-foreground/5 backdrop-blur-md">
-              <span className="flex size-7 shrink-0 items-center justify-center rounded-sm bg-primary text-primary-foreground shadow-sm">
-                <FeaturedIcon className="size-3.5" />
+            <div className="pointer-events-none absolute bottom-2 start-2 z-10 flex items-center gap-1.5 rounded-md bg-background/95 py-1.5 pe-2.5 ps-1.5 shadow-md ring-1 ring-foreground/5 backdrop-blur-md sm:bottom-4 sm:start-4 sm:gap-2.5 sm:py-2 sm:pe-3.5 sm:ps-2">
+              <span className="flex size-5 shrink-0 items-center justify-center rounded-sm bg-primary text-primary-foreground shadow-sm sm:size-7">
+                <FeaturedIcon className="size-3 sm:size-3.5" />
               </span>
-              <span className="flex flex-col items-start gap-1">
-                <span className="font-kurdish-display text-xs font-bold leading-none">
+              <span className="flex flex-col items-start gap-0.5 sm:gap-1">
+                <span className="font-kurdish-display text-[10px] font-bold leading-none sm:text-xs">
                   {featuredLabel}
                 </span>
-                <span className="text-[10px] font-medium leading-none text-muted-foreground">
+                <span className="text-[9px] font-medium leading-none text-muted-foreground sm:text-[10px]">
                   {featuredCount} وێنە
                 </span>
               </span>
