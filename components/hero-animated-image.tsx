@@ -98,10 +98,10 @@ export function HeroAnimatedImage({ images }: HeroAnimatedImageProps) {
             );
           })}
 
-          {/* خاڵەکانی نیشاندەر — ڕێک لە ناوەڕاستی تەواوی وێنەکەدا (inset-x-0 flex justify-center) */}
+          {/* خاڵەکانی نیشاندەر — بچووکتر لە مۆبایل */}
           {images.length > 1 && (
-            <div className="absolute inset-x-0 bottom-3 z-30 flex justify-center pointer-events-none">
-              <div className="flex items-center gap-1.5 rounded-full bg-black/55 px-2.5 py-1 backdrop-blur-md border border-white/20 shadow-md pointer-events-auto">
+            <div className="absolute inset-x-0 bottom-2 sm:bottom-3 z-30 flex justify-center pointer-events-none">
+              <div className="flex items-center gap-1 sm:gap-1.5 rounded-full bg-black/55 px-1.5 sm:px-2.5 py-0.5 sm:py-1 backdrop-blur-md border border-white/20 shadow-md pointer-events-auto">
                 {images.map((_, idx) => (
                   <button
                     key={idx}
@@ -112,10 +112,10 @@ export function HeroAnimatedImage({ images }: HeroAnimatedImageProps) {
                       setCurrentIndex(idx);
                     }}
                     aria-label={`وێنەی ${idx + 1}`}
-                    className={`h-1.5 rounded-full transition-all duration-500 cursor-pointer ${
+                    className={`rounded-full transition-all duration-500 cursor-pointer ${
                       idx === currentIndex
-                        ? "w-5 bg-white shadow-sm"
-                        : "w-1.5 bg-white/45 hover:bg-white/75"
+                        ? "h-1 w-3.5 sm:h-1.5 sm:w-5 bg-white shadow-sm"
+                        : "size-1 sm:h-1.5 sm:w-1.5 bg-white/45 hover:bg-white/75"
                     }`}
                   />
                 ))}
@@ -124,19 +124,19 @@ export function HeroAnimatedImage({ images }: HeroAnimatedImageProps) {
           )}
         </div>
 
-        {/* کارتی سەر وێنە — بە شێوازێکی نەرم زانیاریی بەشەکە نوێ دەکاتەوە */}
+        {/* کارتی سەر وێنە — تەنها لە شاشەی گەورەدا نیشان بدرێت */}
         <a
           href={`#${currentImage.section}`}
-          className="absolute bottom-2 start-2 z-30 flex items-center gap-1.5 rounded-md bg-background/95 py-1.5 pe-2.5 ps-1.5 shadow-md ring-1 ring-foreground/5 backdrop-blur-md transition-all duration-300 hover:bg-background sm:bottom-4 sm:start-4 sm:gap-2.5 sm:py-2 sm:pe-3.5 sm:ps-2"
+          className="hidden lg:flex absolute bottom-4 start-4 z-30 items-center gap-2.5 rounded-md bg-background/95 py-2 pe-3.5 ps-2 shadow-md ring-1 ring-foreground/5 backdrop-blur-md transition-all duration-300 hover:bg-background"
         >
-          <span className="flex size-5 shrink-0 items-center justify-center rounded-sm bg-primary text-primary-foreground shadow-sm transition-transform duration-300 sm:size-7">
-            <Icon className="size-3 sm:size-3.5" />
+          <span className="flex size-7 shrink-0 items-center justify-center rounded-sm bg-primary text-primary-foreground shadow-sm transition-transform duration-300">
+            <Icon className="size-3.5" />
           </span>
-          <span className="flex flex-col items-start gap-0.5 sm:gap-1">
-            <span className="font-kurdish-display text-[10px] font-bold leading-none sm:text-xs">
+          <span className="flex flex-col items-start gap-1">
+            <span className="font-kurdish-display text-xs font-bold leading-none">
               {label}
             </span>
-            <span className="text-[9px] font-medium leading-none text-muted-foreground sm:text-[10px]">
+            <span className="text-[10px] font-medium leading-none text-muted-foreground">
               وێنەی {currentIndex + 1} لە {images.length}
             </span>
           </span>
