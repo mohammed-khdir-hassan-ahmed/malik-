@@ -18,12 +18,9 @@ const BRAND = "دیکۆراتی مەلیك";
 
 function Brand() {
   return (
-    <Link href="/" className="flex items-center gap-2.5">
-      <span className="flex size-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
+    <Link href="/" aria-label={BRAND} className="flex items-center">
+      <span className="flex size-9 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-sm transition-transform hover:scale-105">
         <Crown className="size-5" />
-      </span>
-      <span className="font-kurdish-display text-lg font-bold tracking-tight">
-        {BRAND}
       </span>
     </Link>
   );
@@ -52,7 +49,7 @@ function Hero({
   );
 
   return (
-    <section className="border-b border-border">
+    <section>
       <div className="mx-auto grid max-w-6xl grid-cols-[1.15fr_0.85fr] items-center gap-3.5 px-4 py-6 sm:gap-10 sm:px-6 sm:py-12 md:grid-cols-[1.05fr_0.95fr] md:py-16 lg:gap-14">
         {/* دەق — لە ڕاستەوخۆ (RTL) */}
         <div className="flex flex-col items-start gap-3 sm:gap-5">
@@ -60,9 +57,9 @@ function Hero({
             {BRAND}
           </h1>
           <p className="max-w-md font-kurdish text-[0.8rem] leading-relaxed text-muted-foreground sm:text-[0.95rem] sm:leading-loose">
-            شکۆی بۆشاییەکانت بە دیزاینی مەغریبی و ئەسترۆپۆڵ بڕازێنەوە ، ئاستێک کە شایستەی تۆیە ،{" "}
-            بە ستایلی : <span className="font-bold text-primary">مەغریبی</span> و{" "}
-            <span className="font-bold text-primary">ئەسترۆپۆڵ</span>
+            شکۆی بۆشاییەکانت بە دیزاینی{" "}
+            <span className="font-bold text-primary">مەغریبی</span> و{" "}
+            <span className="font-bold text-primary">ئەسترۆپۆڵ</span> بڕازێنەوە.
           </p>
           {chips.length > 0 ? (
             <div className="flex w-full max-w-md flex-col gap-2.5">
@@ -204,9 +201,9 @@ function HomeSkeleton() {
       {[0, 1].map((row) => (
         <div key={row} className="lg:col-span-2">
           <div className="mb-5 h-8 w-full animate-pulse rounded-sm bg-muted/60" />
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-4">
             {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="aspect-[4/3] animate-pulse rounded-md bg-muted" />
+              <div key={i} className="aspect-square sm:aspect-[4/3] animate-pulse rounded-lg sm:rounded-md bg-muted" />
             ))}
           </div>
         </div>

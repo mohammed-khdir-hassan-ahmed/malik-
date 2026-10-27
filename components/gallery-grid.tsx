@@ -51,12 +51,12 @@ export function GalleryGrid({ section, items }: GalleryGridProps) {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
         {items.map((item, idx) => (
           <figure
             key={item.id}
             onClick={() => setSelectedIndex(idx)}
-            className="group relative cursor-pointer overflow-hidden rounded-md border border-border bg-card p-1.5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-md"
+            className="group relative cursor-pointer overflow-hidden rounded-lg sm:rounded-md border border-border bg-card p-1.5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-md"
             role="button"
             tabIndex={0}
             onKeyDown={(e) => {
@@ -66,12 +66,12 @@ export function GalleryGrid({ section, items }: GalleryGridProps) {
               }
             }}
           >
-            <div className="relative overflow-hidden rounded-[4px]">
+            <div className="relative overflow-hidden rounded-md sm:rounded-[4px]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={getImageUrl(item)}
                 alt={`وێنەی دیکۆرات لە ${label}`}
-                className="aspect-[4/3] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                className="aspect-square sm:aspect-[4/3] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                 loading="lazy"
               />
               {/* نیشانەی بینین لەکاتی هۆڤەرکردن */}
@@ -82,8 +82,8 @@ export function GalleryGrid({ section, items }: GalleryGridProps) {
               </div>
             </div>
             {/* ناوی بەش و ئایکۆنی تایبەتی هەر بەشێک (مەغریبی یان ئەسترۆپۆڵ) */}
-            <figcaption className="flex items-center justify-between px-1.5 pb-1 pt-2 text-[10px] text-muted-foreground">
-              <span className="font-medium text-foreground/80">{label}</span>
+            <figcaption className="flex items-center justify-between px-1.5 pb-1 pt-2 text-[11px] sm:text-[10px] text-muted-foreground">
+              <span className="font-medium text-foreground/85">{label}</span>
               <SectionIcon className="size-3.5 text-primary transition-transform duration-300 group-hover:scale-115" />
             </figcaption>
           </figure>
