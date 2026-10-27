@@ -13,6 +13,7 @@ import {
   type Section,
 } from "@/lib/images";
 
+
 const BRAND = "دیکۆراتی مەلیك";
 
 function Brand() {
