@@ -98,27 +98,36 @@ export function HeroAnimatedImage({ images }: HeroAnimatedImageProps) {
             );
           })}
 
-          {/* خاڵەکانی نیشاندەر — بچووکتر لە مۆبایل */}
-          {images.length > 1 && (
+          {/* خاڵەکانی نیشاندەر — هەمیشە ۳ دانە دیار بێت */}
+          {images.length > 0 && (
             <div className="absolute inset-x-0 bottom-2 sm:bottom-3 z-30 flex justify-center pointer-events-none">
-              <div className="flex items-center gap-1 sm:gap-1.5 rounded-full bg-black/55 px-1.5 sm:px-2.5 py-0.5 sm:py-1 backdrop-blur-md border border-white/20 shadow-md pointer-events-auto">
-                {images.map((_, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setCurrentIndex(idx);
-                    }}
-                    aria-label={`وێنەی ${idx + 1}`}
-                    className={`rounded-full transition-all duration-500 cursor-pointer ${
-                      idx === currentIndex
-                        ? "h-1 w-3.5 sm:h-1.5 sm:w-5 bg-white shadow-sm"
-                        : "size-1 sm:h-1.5 sm:w-1.5 bg-white/45 hover:bg-white/75"
-                    }`}
-                  />
-                ))}
+              <div className="flex items-center gap-1.5 sm:gap-2 rounded-full bg-black/60 px-2 sm:px-2.5 py-0.5 sm:py-1 backdrop-blur-md border border-white/20 shadow-md pointer-events-auto">
+                {[0, 1, 2].map((dotIdx) => {
+                  const activeDot = currentIndex % 3;
+                  const isActive = dotIdx === activeDot;
+                  return (
+                    <button
+                      key={dotIdx}
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (!isActive) {
+                          const delta = dotIdx - activeDot;
+                          setCurrentIndex(
+                            (prev) => (prev + delta + images.length) % images.length
+                          );
+                        }
+                      }}
+                      aria-label={`خاڵی ${dotIdx + 1}`}
+                      className={`rounded-full transition-all duration-500 cursor-pointer ${
+                        isActive
+                          ? "h-1.5 w-4 sm:h-1.5 sm:w-5 bg-white shadow-sm"
+                          : "size-1.5 bg-white/45 hover:bg-white/75"
+                      }`}
+                    />
+                  );
+                })}
               </div>
             </div>
           )}

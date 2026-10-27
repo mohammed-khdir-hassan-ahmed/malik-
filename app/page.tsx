@@ -53,12 +53,12 @@ function Hero({
   return (
     <section>
       <div className="mx-auto grid max-w-6xl grid-cols-[0.88fr_1.12fr] items-center gap-3 px-3.5 py-5 sm:grid-cols-[1.15fr_0.85fr] sm:gap-10 sm:px-6 sm:py-12 md:grid-cols-[1.05fr_0.95fr] md:py-16 lg:gap-14">
-        {/* دەق — لە ڕاستەوخۆ (RTL) */}
-        <div className="flex flex-col items-start gap-2.5 sm:gap-5">
-          <h1 className="font-kurdish-display text-balance text-[1.25rem] font-bold leading-[1.35] tracking-tight sm:text-[2.4rem] sm:leading-[1.35] md:text-[3.2rem] md:leading-[1.4] lg:text-[3.6rem]">
+        {/* دەق — لە ڕاستەوە بەرامبەر وێنەکە */}
+        <div className="flex flex-col items-start gap-2.5 translate-x-1 sm:translate-x-0 sm:gap-5">
+          <h1 className="font-kurdish-display text-balance text-right text-[1.25rem] font-bold leading-[1.35] tracking-tight -translate-x-5 sm:translate-x-0 sm:text-[2.4rem] sm:leading-[1.35] md:text-[3.2rem] md:leading-[1.4] lg:text-[3.6rem]">
             {BRAND}
           </h1>
-          <p className="max-w-md font-kurdish text-[0.72rem] leading-relaxed text-muted-foreground sm:text-[0.95rem] sm:leading-loose">
+          <p className="max-w-md font-kurdish text-right text-[0.72rem] leading-relaxed text-muted-foreground -translate-x-3 sm:translate-x-0 sm:text-[0.95rem] sm:leading-loose">
             شکۆی بۆشاییەکانت بە دیزاینی{" "}
             <span className="font-bold text-primary">مەغریبی</span> و{" "}
             <span className="font-bold text-primary">ئەسترۆپۆڵ</span> بڕازێنەوە.
@@ -66,7 +66,7 @@ function Hero({
           {chips.length > 0 ? (
             <HeroSectionChips chips={chips} />
           ) : (
-            <p className="text-xs font-medium text-muted-foreground">
+            <p className="text-right text-xs font-medium text-muted-foreground">
               بەم زووانە وێنەکان دادەنرێن
             </p>
           )}
@@ -124,15 +124,25 @@ async function HomeContent() {
   const moroccan = images.filter((i) => i.section === "moroccan");
   const astropol = images.filter((i) => i.section === "astropol");
 
+  const counts: Record<Section, number> = {
+    moroccan: moroccan.length,
+    astropol: astropol.length,
+  };
+  const chips = (Object.entries(counts) as Array<[Section, number]>).filter(
+    ([, count]) => count > 0
+  );
+
   return (
     <div className="flex min-h-svh flex-col">
       <SiteHeader />
       <main className="flex-1">
-        <Hero
-          counts={{ moroccan: moroccan.length, astropol: astropol.length }}
-          images={images}
-        />
-        <div className="mx-auto max-w-6xl space-y-12 px-4 py-12 sm:px-6 md:py-14">
+        <Hero counts={counts} images={images} />
+        <div className="mx-auto max-w-6xl space-y-10 px-4 py-8 sm:space-y-12 sm:px-6 sm:py-12 md:py-14">
+          {chips.length > 0 && (
+            <div className="flex items-center justify-center">
+              <HeroSectionChips chips={chips} layout="row" />
+            </div>
+          )}
           <GallerySection section="moroccan" items={moroccan} index={1} />
           <GallerySection section="astropol" items={astropol} index={2} />
         </div>
