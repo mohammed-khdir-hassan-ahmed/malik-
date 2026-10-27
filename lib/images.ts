@@ -3,23 +3,8 @@ import path from "path";
 import { randomUUID } from "crypto";
 import { getImageKit } from "./imagekit";
 
-export type Section = "moroccan" | "astropol";
-
-export const SECTIONS: Section[] = ["moroccan", "astropol"];
-
-export const SECTION_LABELS: Record<Section, string> = {
-  moroccan: "بەشی مەغریبی",
-  astropol: "بەشی ئەسترۆپۆڵ",
-};
-
-export interface ImageRecord {
-  id: string;
-  section: Section;
-  filename: string;
-  createdAt: string;
-  url?: string;
-  fileId?: string;
-}
+export * from "./images-types";
+import { type ImageRecord, type Section, SECTIONS } from "./images-types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DATA_FILE = path.join(DATA_DIR, "images.json");
@@ -28,18 +13,9 @@ const UPLOADS_DIR = path.join(process.cwd(), "public", "uploads");
 // پێپەڕەکراوەکان: جۆرە پەسەندکراوەکان بۆ درێژکراوەی فایل
 const ALLOWED_EXTENSIONS = new Set(["jpg", "jpeg", "png", "webp", "avif", "gif"]);
 
-export function isSection(value: string): value is Section {
-  return (SECTIONS as string[]).includes(value);
-}
-
 function sanitizeExtension(raw: string): string | null {
   const ext = raw.toLowerCase().replace(/[^\w]/g, "");
   return ALLOWED_EXTENSIONS.has(ext) ? ext : null;
-}
-
-export function getImageUrl(record: ImageRecord): string {
-  if (record.url) return record.url;
-  return `/uploads/${record.filename}`;
 }
 
 export async function listImages(): Promise<ImageRecord[]> {

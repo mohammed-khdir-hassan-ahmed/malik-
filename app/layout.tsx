@@ -6,7 +6,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "دیکۆراتی مەلیک",
   description:
-    "دیکۆراتی مەلیک — دیکۆراتی ناوخۆیی بە دوو بەش: بەشی مەغریبی و بەشی ئەسترۆپۆڵ",
+    "دیکۆراتی مەلیک — شکۆی بۆشاییەکانت بە دیزاینی مەغریبی و ئەسترۆپۆڵ. ئاستێک لە جوانی کە شایستەی تۆیە.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

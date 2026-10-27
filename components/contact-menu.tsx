@@ -12,11 +12,12 @@ import {
 } from "@/components/brand-icons";
 import { Button } from "@/components/ui/button";
 import {
-  Popover,
-  PopoverClose,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   FACEBOOK_URL,
   MAP_URL,
@@ -70,134 +71,143 @@ const SOCIAL_LINKS: SocialLink[] = [
 
 export function ContactMenu() {
   return (
-    <Popover>
-      <PopoverTrigger
+    <Dialog>
+      <DialogTrigger
         render={
           <Button
             size="sm"
-            className="h-9 rounded-md px-4 shadow-sm hover:shadow-md"
+            className="h-9 rounded-md px-4 shadow-sm transition-all duration-200 hover:shadow-md cursor-pointer font-kurdish font-medium gap-2"
           >
             <MapPin className="size-4" />
-            ناونیشان
+            <span>ناونیشان</span>
           </Button>
         }
       />
-      <PopoverContent
-        className="w-[min(20rem,calc(100vw-2.5rem))] overflow-hidden p-0 rounded-md"
-        sideOffset={10}
+      <DialogContent
+        showCloseButton={false}
+        className="w-[min(26rem,calc(100vw-2rem))] max-h-[92vh] overflow-y-auto p-0 rounded-2xl bg-primary text-primary-foreground border-white/20 shadow-2xl font-kurdish gap-0"
       >
         <div>
-          {/* سەرەوە — براند + داخستن */}
-          <div className="flex items-center gap-2.5 border-b border-border bg-muted/30 px-4 py-3">
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <Crown className="size-4" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="font-kurdish-display text-sm font-bold leading-none">
-                دیکۆراتی مەلیک
-              </p>
-              <p className="mt-1 text-[10px] leading-none text-muted-foreground">
-                پەیوەندیمان پێوە بکە
-              </p>
-            </div>
-            <PopoverClose
+          {/* سەرەوە — وێنەی پێشانگا لەگەڵ دوگمەی داخستن */}
+          <div className="relative h-44 w-full sm:h-52 overflow-hidden bg-black/20">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/image/hama.jpg"
+              alt="دیکۆراتی مەلیک"
+              className="h-full w-full object-cover object-center transition-transform duration-700 ease-out hover:scale-105"
+            />
+            {/* گۆڕانی ڕەنگ بەسەر وێنەکەدا بۆ جوانی و ڕوونیی دەقەکان */}
+            <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/40 to-black/35" />
+
+            {/* دوگمەی داخستن لە گۆشەی سەرەوە */}
+            <DialogClose
               render={
                 <button
                   type="button"
                   aria-label="داخستن"
                   title="داخستن"
-                  className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors duration-200 hover:bg-background hover:text-foreground hover:shadow-sm"
+                  className="absolute top-3 end-3 z-10 flex size-8 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md transition-all hover:bg-black/75 hover:scale-105 active:scale-95 cursor-pointer shadow-md"
                 >
                   <X className="size-4" />
                 </button>
               }
             />
-          </div>
 
-          {/* کارتی ناونیشان + نەخشە */}
-          <div className="mx-3 mt-3 rounded-md border border-border bg-background p-3">
-            <div className="flex items-start gap-2.5">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
-                <MapPin className="size-4" />
+            {/* نیشان و ناوی براند لەسەر وێنەکە */}
+            <div className="absolute bottom-3 start-4 end-4 z-10 flex items-center gap-2.5">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/20 text-white shadow-sm backdrop-blur-md border border-white/30">
+                <Crown className="size-5" />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-[10px] font-semibold tracking-[0.14em] text-muted-foreground">
-                  ناونیشان
-                </p>
-                <p className="mt-1 text-xs leading-relaxed text-foreground">
-                  {SHOP_ADDRESS}
+                <DialogTitle className="font-kurdish-display text-base font-bold text-white leading-tight drop-shadow-sm">
+                  دیکۆراتی مەلیک
+                </DialogTitle>
+                <p className="text-[11px] font-medium text-white/90 leading-tight mt-0.5">
+                  پێشوازی لە داواکارییەکانتان دەکەین
                 </p>
               </div>
             </div>
-            <a
-              href={MAP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-md border border-border bg-background px-3 py-2 text-xs font-medium text-foreground transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
-            >
-              <Navigation className="size-3.5" />
-              کردنەوە لە نەخشە
-            </a>
           </div>
 
-          {/* ژمارەی تەلەفۆن — لە مۆبایل ڕاستەوخۆ کەڵینگ دەکاتەوە */}
-          <a
-            href={`tel:${SHOP_PHONE.replace(/\s/g, "")}`}
-            aria-label={`کەڵینگ بۆ ${SHOP_PHONE}`}
-            className="group mx-3 mt-2.5 flex items-center gap-2.5 rounded-md border border-border bg-background p-3 transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5"
-          >
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-sm">
-              <Phone className="size-4" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="text-[10px] font-semibold tracking-[0.14em] text-muted-foreground">
-                ژمارەی تەلەفۆن
-              </p>
-              <p
+          {/* بەشەکانی زانیاری و پەیوەندی */}
+          <div className="p-4 space-y-3">
+            {/* کارتی ناونیشان + نەخشە */}
+            
+
+            {/* ژمارەی تەلەفۆن — لە هەمان ئاستی ئاسۆیی */}
+            <a
+              href={`tel:${SHOP_PHONE.replace(/\s/g, "")}`}
+              aria-label={`پەیوەندیکردن بە ${SHOP_PHONE}`}
+              className="group flex items-center justify-between gap-3 rounded-xl border border-white/15 bg-white/10 p-3.5 backdrop-blur-sm transition-colors hover:bg-white/[0.14]"
+            >
+              <div className="flex items-center gap-2.5">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/20 text-white border border-white/20 transition-transform group-hover:scale-105">
+                  <Phone className="size-4" />
+                </span>
+                <span className="text-xs font-semibold text-white/85">
+                  ژمارەی پەیوەندی:
+                </span>
+              </div>
+              <span
                 dir="ltr"
-                className="text-start text-sm font-medium text-foreground"
+                className="text-sm font-bold text-white tracking-wider"
               >
                 {SHOP_PHONE}
-              </p>
-            </div>
-          </a>
+              </span>
+            </a>
 
-          {/* سۆشیاڵ میدیا — کارتی ٣ ستوونی */}
-          <div className="p-3 pb-4">
-            <p className="px-1 pb-2 pt-1 text-[10px] font-semibold tracking-[0.18em] text-muted-foreground">
-              بەدوامان بکەوە
-            </p>
-            <div className="flex flex-wrap justify-center gap-2">
-              {SOCIAL_LINKS.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={link.name}
-                    title={link.name}
-                    className="group flex w-[31%] flex-none flex-col items-center gap-1.5 rounded-md border border-border bg-background px-1 py-2.5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-sm"
+            {/* سۆشیاڵ میدیا */}
+            <div className="rounded-xl border border-white/15 bg-white/10 p-3.5 backdrop-blur-sm">
+              <p className="text-[11px] font-semibold text-white/75 mb-2.5">
+                پەیوەندیمان پێوە بکەن لە ڕێگەی
+              </p>
+              <div className="grid grid-cols-5 gap-2">
+                {SOCIAL_LINKS.map((link) => {
+                  const Icon = link.icon;
+                  return (
+                    <a
+                      key={link.name}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={link.name}
+                      title={link.name}
+                      className="group flex flex-col items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 py-2 px-1 transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/15 hover:border-white/25"
+                    >
+                      <span
+                        className={`flex size-8 items-center justify-center rounded-full shadow-sm transition-transform duration-200 group-hover:scale-110 ${link.chipClass}`}
+                      >
+                        <Icon className="size-3.5" />
+                      </span>
+                      <span
+                        dir="ltr"
+                        className="text-[10px] font-medium text-white/90 truncate max-w-full"
+                      >
+                        {link.name}
+                      </span>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* دوگمەی داخستن لە خوارەوە */}
+            <div className="pt-1 pb-0.5">
+              <DialogClose
+                render={
+                  <button
+                    type="button"
+                    className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/15 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/25 active:scale-[0.98] cursor-pointer"
                   >
-                    <span
-                      className={`flex size-9 items-center justify-center rounded-full ${link.chipClass}`}
-                    >
-                      <Icon className="size-4" />
-                    </span>
-                    <span
-                      dir="ltr"
-                      className="text-[11px] font-medium text-foreground"
-                    >
-                      {link.name}
-                    </span>
-                  </a>
-                );
-              })}
+                   
+                    داخستن
+                  </button>
+                }
+              />
             </div>
           </div>
         </div>
-      </PopoverContent>
-    </Popover>
+      </DialogContent>
+    </Dialog>
   );
 }

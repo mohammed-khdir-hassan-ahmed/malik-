@@ -13,4 +13,4 @@ export const WHATSAPP_URL = "https://wa.me/9647510361406";
 export const VIBER_URL = "viber://chat?number=%2B9647510361406";
 export const FACEBOOK_URL = "https://facebook.com/share/1BcD8FXJjT?mibextid=wwXIfr";
 export const TIKTOK_URL = "https://www.tiktok.com/@hama_dikorat";
-export const SNAPCHAT_URL = "https://www.snapchat.com/add/malikk2026";
+export const SNAPCHAT_URL = "https://snapchat.com/t/uvf2JbqF";

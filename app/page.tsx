@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { connection } from "next/server";
-import { Crown, Gem, Loader2 } from "lucide-react";
+import { Crown, Loader2 } from "lucide-react";
 
 import { ContactMenu } from "@/components/contact-menu";
+import { GalleryGrid } from "@/components/gallery-grid";
+import { HeroAnimatedImage } from "@/components/hero-animated-image";
 import { SECTION_ICONS } from "@/components/section-icons";
 import {
-  getImageUrl,
   listImages,
   SECTION_LABELS,
   type ImageRecord,
@@ -42,18 +43,14 @@ function SiteHeader() {
 
 function Hero({
   counts,
-  featured,
-  featuredLabel,
+  images,
 }: {
   counts: Record<Section, number>;
-  featured: ImageRecord | null;
-  featuredLabel: string;
+  images: ImageRecord[];
 }) {
   const chips = (Object.entries(counts) as Array<[Section, number]>).filter(
     ([, count]) => count > 0
   );
-  const featuredCount = featured ? counts[featured.section] : 0;
-  const FeaturedIcon = featured ? SECTION_ICONS[featured.section] : Crown;
 
   return (
     <section className="border-b border-border">
@@ -63,10 +60,10 @@ function Hero({
           <h1 className="font-kurdish-display text-balance text-[1.55rem] font-bold leading-[1.45] tracking-tight sm:text-[2.4rem] sm:leading-[1.35] md:text-[3.2rem] md:leading-[1.4] lg:text-[3.6rem]">
             {BRAND}
           </h1>
-          <p className="max-w-md text-[0.8rem] leading-relaxed text-muted-foreground sm:text-[0.95rem] sm:leading-loose">
-            نیشانەی جوانی و بەرزکردنەوەی شوێنەکەت — دیکۆراتیەکی تایبەت بە دوو
-            ستایلی جیاواز: <span className="font-medium text-foreground">بەشی مەغریبی</span> و{" "}
-            <span className="font-medium text-foreground">بەشی ئەسترۆپۆڵ</span>.
+          <p className="max-w-md font-kurdish text-[0.8rem] leading-relaxed text-muted-foreground sm:text-[0.95rem] sm:leading-loose">
+            شکۆی بۆشاییەکانت بە دیزاینی مەغریبی و ئەسترۆپۆڵ بڕازێنەوە ، ئاستێک کە شایستەی تۆیە ،{" "}
+            بە ستایلی : <span className="font-bold text-primary">مەغریبی</span> و{" "}
+            <span className="font-bold text-primary">ئەسترۆپۆڵ</span>
           </p>
           {chips.length > 0 ? (
             <div className="flex w-full max-w-md flex-col gap-2.5">
@@ -111,50 +108,8 @@ function Hero({
           )}
         </div>
 
-        {/* وێنەی چوارچێوەدار */}
-        <div className="relative">
-          {/* چوارچێوەی جوڵاو — تەنها بۆردەری ڕەنگی سەرەکی */}
-          <span
-            aria-hidden
-            className="animate-offset-frame absolute -bottom-3 -start-3 hidden h-full w-full rounded-md border border-primary sm:block"
-          />
-          <a
-            href={featured ? `#${featured.section}` : "#moroccan"}
-            className="group relative z-0 block rounded-md border border-border bg-card p-2 shadow-sm transition-shadow duration-300 hover:shadow-md"
-          >
-          <div className="overflow-hidden rounded-[5px]">
-            {featured ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src={getImageUrl(featured)}
-                alt={`وێنەی هەڵبژاردە لە ${featuredLabel}`}
-                className="aspect-[3/4] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04] sm:aspect-[4/3] md:aspect-[5/5] lg:aspect-[4/4.6]"
-              />
-            ) : (
-              <div className="flex aspect-[3/4] flex-col items-center justify-center gap-2 bg-muted/50 text-muted-foreground sm:aspect-[4/3] md:aspect-[5/5]">
-                <Crown className="size-8 opacity-40" />
-                <p className="text-xs">وێنەکە بەم زووانە دادەنرێت</p>
-              </div>
-            )}
-          </div>
-          {/* کارتی ژمارە — هەڵفڕیو لەسەر وێنە */}
-          {featured ? (
-            <div className="pointer-events-none absolute bottom-2 start-2 z-10 flex items-center gap-1.5 rounded-md bg-background/95 py-1.5 pe-2.5 ps-1.5 shadow-md ring-1 ring-foreground/5 backdrop-blur-md sm:bottom-4 sm:start-4 sm:gap-2.5 sm:py-2 sm:pe-3.5 sm:ps-2">
-              <span className="flex size-5 shrink-0 items-center justify-center rounded-sm bg-primary text-primary-foreground shadow-sm sm:size-7">
-                <FeaturedIcon className="size-3 sm:size-3.5" />
-              </span>
-              <span className="flex flex-col items-start gap-0.5 sm:gap-1">
-                <span className="font-kurdish-display text-[10px] font-bold leading-none sm:text-xs">
-                  {featuredLabel}
-                </span>
-                <span className="text-[9px] font-medium leading-none text-muted-foreground sm:text-[10px]">
-                  {featuredCount} وێنە
-                </span>
-              </span>
-            </div>
-          ) : null}
-          </a>
-        </div>
+        {/* وێنەی چوارچێوەدار — ئەنیمەیشنی گۆڕینی وێنەکان هەر دوو چرکە جارێک */}
+        <HeroAnimatedImage images={images} />
       </div>
     </section>
   );
@@ -192,27 +147,7 @@ function GallerySection({
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
-        {items.map((item) => (
-          <figure
-            key={item.id}
-            className="group overflow-hidden rounded-md border border-border bg-card p-1.5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
-          >
-            <div className="overflow-hidden rounded-[4px]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={getImageUrl(item)}
-                alt={`وێنەی دیکۆرات لە ${label}`}
-                className="aspect-[4/3] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.05]"
-              />
-            </div>
-            <figcaption className="flex items-center justify-between px-1.5 pb-1 pt-2 text-[10px] text-muted-foreground">
-              <span className="font-medium text-foreground/80">{label}</span>
-              <Gem className="size-3 text-primary transition-transform duration-300 group-hover:rotate-45" />
-            </figcaption>
-          </figure>
-        ))}
-      </div>
+      <GalleryGrid section={section} items={items} />
     </section>
   );
 }
@@ -225,19 +160,13 @@ async function HomeContent() {
   const moroccan = images.filter((i) => i.section === "moroccan");
   const astropol = images.filter((i) => i.section === "astropol");
 
-  const featured = moroccan[0] ?? astropol[0] ?? null;
-  const featuredLabel = featured
-    ? SECTION_LABELS[featured.section]
-    : "بەشی مەغریبی";
-
   return (
     <div className="flex min-h-svh flex-col">
       <SiteHeader />
       <main className="flex-1">
         <Hero
           counts={{ moroccan: moroccan.length, astropol: astropol.length }}
-          featured={featured}
-          featuredLabel={featuredLabel}
+          images={images}
         />
         <div className="mx-auto max-w-6xl space-y-12 px-4 py-12 sm:px-6 md:py-14">
           <GallerySection section="moroccan" items={moroccan} index={1} />

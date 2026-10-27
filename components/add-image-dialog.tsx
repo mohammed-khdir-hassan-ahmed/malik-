@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { uploadImage, type UploadState } from "@/app/actions";
-import type { Section } from "@/lib/images";
+import type { Section } from "@/lib/images-types";
 
 const initialState: UploadState = { ok: false };
 
