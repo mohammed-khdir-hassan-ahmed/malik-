@@ -6,6 +6,8 @@ import { Crown, Loader2 } from "lucide-react";
 import { ContactMenu } from "@/components/contact-menu";
 import { GalleryGrid } from "@/components/gallery-grid";
 import { HeroAnimatedImage } from "@/components/hero-animated-image";
+import { HeroSectionChips } from "@/components/hero-section-chips";
+import { ScrollToTop } from "@/components/scroll-to-top";
 import { SECTION_ICONS } from "@/components/section-icons";
 import {
   listImages,
@@ -50,53 +52,19 @@ function Hero({
 
   return (
     <section>
-      <div className="mx-auto grid max-w-6xl grid-cols-[1.15fr_0.85fr] items-center gap-3.5 px-4 py-6 sm:gap-10 sm:px-6 sm:py-12 md:grid-cols-[1.05fr_0.95fr] md:py-16 lg:gap-14">
+      <div className="mx-auto grid max-w-6xl grid-cols-[0.88fr_1.12fr] items-center gap-3 px-3.5 py-5 sm:grid-cols-[1.15fr_0.85fr] sm:gap-10 sm:px-6 sm:py-12 md:grid-cols-[1.05fr_0.95fr] md:py-16 lg:gap-14">
         {/* دەق — لە ڕاستەوخۆ (RTL) */}
-        <div className="flex flex-col items-start gap-3 sm:gap-5">
-          <h1 className="font-kurdish-display text-balance text-[1.55rem] font-bold leading-[1.45] tracking-tight sm:text-[2.4rem] sm:leading-[1.35] md:text-[3.2rem] md:leading-[1.4] lg:text-[3.6rem]">
+        <div className="flex flex-col items-start gap-2.5 sm:gap-5">
+          <h1 className="font-kurdish-display text-balance text-[1.25rem] font-bold leading-[1.35] tracking-tight sm:text-[2.4rem] sm:leading-[1.35] md:text-[3.2rem] md:leading-[1.4] lg:text-[3.6rem]">
             {BRAND}
           </h1>
-          <p className="max-w-md font-kurdish text-[0.8rem] leading-relaxed text-muted-foreground sm:text-[0.95rem] sm:leading-loose">
+          <p className="max-w-md font-kurdish text-[0.72rem] leading-relaxed text-muted-foreground sm:text-[0.95rem] sm:leading-loose">
             شکۆی بۆشاییەکانت بە دیزاینی{" "}
             <span className="font-bold text-primary">مەغریبی</span> و{" "}
             <span className="font-bold text-primary">ئەسترۆپۆڵ</span> بڕازێنەوە.
           </p>
           {chips.length > 0 ? (
-            <div className="flex w-full max-w-md flex-col gap-2.5">
-              {chips.map(([section, count], idx) => {
-                const Icon = SECTION_ICONS[section];
-                const isLead = idx === 0;
-                return (
-                  <a
-                    key={section}
-                    href={`#${section}`}
-                    className={
-                      isLead
-                        ? "group flex h-9 min-w-0 items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition-all duration-200 hover:shadow-md"
-                        : "group flex h-9 min-w-0 items-center justify-center gap-2 rounded-md border border-border bg-background px-4 text-sm font-medium transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
-                    }
-                  >
-                    <Icon
-                      className={`shrink-0 ${
-                        isLead ? "size-4 opacity-90" : "size-4 text-primary"
-                      }`}
-                    />
-                    <span className="truncate">
-                      {SECTION_LABELS[section]}
-                    </span>
-                    <span
-                      className={`shrink-0 rounded-sm px-1.5 py-0.5 text-[11px] leading-none ${
-                        isLead
-                          ? "bg-white/25"
-                          : "bg-muted text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary"
-                      }`}
-                    >
-                      {count}
-                    </span>
-                  </a>
-                );
-              })}
-            </div>
+            <HeroSectionChips chips={chips} />
           ) : (
             <p className="text-xs font-medium text-muted-foreground">
               بەم زووانە وێنەکان دادەنرێن
@@ -169,6 +137,7 @@ async function HomeContent() {
           <GallerySection section="astropol" items={astropol} index={2} />
         </div>
       </main>
+      <ScrollToTop />
       <footer className="border-t border-border py-6 text-center text-sm text-muted-foreground">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <p dir="ltr" className="text-xs sm:text-sm">

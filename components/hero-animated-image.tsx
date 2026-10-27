@@ -36,7 +36,7 @@ export function HeroAnimatedImage({ images }: HeroAnimatedImageProps) {
           aria-hidden
           className="animate-offset-frame absolute -bottom-3 -start-3 hidden h-full w-full rounded-md border border-primary sm:block"
         />
-        <div className="group relative z-0 block rounded-md border border-border bg-card p-2 shadow-sm">
+        <div className="group relative z-0 block rounded-md border border-border bg-card p-1.5 sm:p-2 shadow-sm">
           <div className="flex aspect-[3/4] flex-col items-center justify-center gap-2 rounded-[5px] bg-muted/50 text-muted-foreground sm:aspect-[4/3] md:aspect-[5/5]">
             <Crown className="size-8 opacity-40" />
             <p className="text-xs">وێنەکە بەم زووانە دادەنرێت</p>
@@ -62,7 +62,7 @@ export function HeroAnimatedImage({ images }: HeroAnimatedImageProps) {
         className="animate-offset-frame absolute -bottom-3 -start-3 hidden h-full w-full rounded-md border border-primary sm:block"
       />
 
-      <div className="relative z-0 block overflow-hidden rounded-md border border-border bg-card p-2 shadow-sm transition-all duration-300 hover:shadow-md">
+      <div className="relative z-0 block overflow-hidden rounded-md border border-border bg-card p-1.5 sm:p-2 shadow-sm transition-all duration-300 hover:shadow-md">
         <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[5px] bg-neutral-900 sm:aspect-[4/3] md:aspect-[5/5] lg:aspect-[4/4.6]">
           {/* بەشی وێنەکان: ئەنیمەیشنی سلاید و نەرم بە خێرایی کێرڤی iOS (Cubic Bezier) */}
           {images.map((img, idx) => {
