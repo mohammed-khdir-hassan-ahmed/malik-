@@ -14,7 +14,6 @@ import {
   type Section,
 } from "@/lib/images";
 
-
 const BRAND = "دیکۆراتی مەلیك";
 
 function Brand() {
@@ -173,6 +172,21 @@ async function HomeContent() {
           <GallerySection section="astropol" items={astropol} index={2} />
         </div>
       </main>
+      <footer className="border-t border-border py-6 text-center text-sm text-muted-foreground">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <p dir="ltr" className="text-xs sm:text-sm">
+            Designed and developed by{" "}
+            <a
+              href="https://www.facebook.com/share/19mkyLUi97/?mibextid=wwXIfr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-foreground underline underline-offset-4 transition-colors hover:text-primary"
+            >
+              Sha Soft
+            </a>
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }

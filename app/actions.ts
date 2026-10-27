@@ -69,6 +69,8 @@ export async function uploadImage(
     return { ok: false, error: message };
   }
 
+  revalidatePath("/", "layout");
+  revalidatePath("/dashboard", "layout");
   revalidatePath("/");
   revalidatePath("/dashboard");
   return { ok: true };
@@ -81,6 +83,8 @@ export async function removeImage(formData: FormData): Promise<void> {
   if (!id) return;
 
   await deleteImage(id);
+  revalidatePath("/", "layout");
+  revalidatePath("/dashboard", "layout");
   revalidatePath("/");
   revalidatePath("/dashboard");
 }

@@ -1,14 +1,31 @@
 import { promises as fs } from "fs";
 import path from "path";
+import os from "os";
 import { randomUUID } from "crypto";
 import { getImageKit } from "./imagekit";
 
 export * from "./images-types";
-import { type ImageRecord, type Section, SECTIONS } from "./images-types";
+import { type ImageRecord, type Section } from "./images-types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DATA_FILE = path.join(DATA_DIR, "images.json");
+const TMP_BACKUP_FILE = path.join(os.tmpdir(), "dekorat_malik_images.json");
 const UPLOADS_DIR = path.join(process.cwd(), "public", "uploads");
+
+// پاشەکەوتکردنی کاتی لە یادگە (Memory Cache) بۆ چارەسەرکردنی دواکەوتنی ئیندێکسی ImageKit
+// کاتێک وێنەیەک زیاد دەکرێت یان دەسڕدرێتەوە، ImageKit تا چەند چرکەیەک لە listFiles نیشانی نادات
+type GlobalImagesState = {
+  __recentAddedImages?: Map<string, { record: ImageRecord; timestamp: number }>;
+  __recentDeletedImageIds?: Map<string, number>;
+};
+
+const gState = globalThis as unknown as GlobalImagesState;
+if (!gState.__recentAddedImages) {
+  gState.__recentAddedImages = new Map();
+}
+if (!gState.__recentDeletedImageIds) {
+  gState.__recentDeletedImageIds = new Map();
+}
 
 // پێپەڕەکراوەکان: جۆرە پەسەندکراوەکان بۆ درێژکراوەی فایل
 const ALLOWED_EXTENSIONS = new Set(["jpg", "jpeg", "png", "webp", "avif", "gif"]);
@@ -18,8 +35,41 @@ function sanitizeExtension(raw: string): string | null {
   return ALLOWED_EXTENSIONS.has(ext) ? ext : null;
 }
 
+async function readBackupRecords(): Promise<ImageRecord[]> {
+  try {
+    const raw = await fs.readFile(DATA_FILE, "utf8");
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+  } catch {}
+
+  try {
+    const raw = await fs.readFile(TMP_BACKUP_FILE, "utf8");
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+  } catch {}
+
+  return [];
+}
+
+async function writeBackupRecords(records: ImageRecord[]): Promise<void> {
+  const json = JSON.stringify(records, null, 2);
+  try {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    await fs.writeFile(DATA_FILE, json, "utf8");
+  } catch {
+    // بێدەنگ لە سێرڤەرلێسی Vercel
+  }
+  try {
+    await fs.writeFile(TMP_BACKUP_FILE, json, "utf8");
+  } catch {
+    // بێدەنگ
+  }
+}
+
 export async function listImages(): Promise<ImageRecord[]> {
-  // 1. هەوڵدەدەین ڕاستەوخۆ لە ImageKit وێنەکان بهێنینەوە (بۆ ئەوەی لەسەر ڤێرسڵیش بەردەوام نوێ بێت و کاربکات)
+  let records: ImageRecord[] = [];
+
+  // 1. هێنانی وێنەکان لە ImageKit
   try {
     const imagekit = getImageKit();
     const files = await imagekit.listFiles({
@@ -29,8 +79,6 @@ export async function listImages(): Promise<ImageRecord[]> {
     });
 
     if (Array.isArray(files) && files.length > 0) {
-      const records: ImageRecord[] = [];
-
       for (const file of files) {
         if ("fileId" in file && "url" in file) {
           let section: Section = "moroccan";
@@ -51,32 +99,72 @@ export async function listImages(): Promise<ImageRecord[]> {
           });
         }
       }
-
-      if (records.length > 0) {
-        return records;
-      }
     }
   } catch (err) {
-    console.warn("نەتوانرا لە ImageKit وێنەکان بهێنرێن، پەنا دەبەینە بەر data/images.json:", err);
+    console.warn("نەتوانرا لە ImageKit وێنەکان بهێنرێن، پەنا دەبەینە بەر فایلی بەکەپ:", err);
   }
 
-  // 2. ئەگەر ImageKit بەردەست نەبوو یان کێشەی هەبوو، فایلی data/images.json دەخوێنینەوە
-  try {
-    const raw = await fs.readFile(DATA_FILE, "utf8");
-    const parsed = JSON.parse(raw) as ImageRecord[];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
+  // ئەگەر ImageKit بەردەست نەبوو یان وێنەی نەگەڕاندەوە، فایلی بەکەپ دەخوێنینەوە
+  if (records.length === 0) {
+    records = await readBackupRecords();
   }
-}
 
-async function writeImages(records: ImageRecord[]): Promise<void> {
-  try {
-    await fs.mkdir(DATA_DIR, { recursive: true });
-    await fs.writeFile(DATA_FILE, JSON.stringify(records, null, 2), "utf8");
-  } catch (err) {
-    console.warn("ئاگاداری: نووسین لەسەر فایل ئەنجام نەدرا (ئاساییە لە ژینگەی سێرڤەرلێسی ڤێرسڵ):", err);
+  const now = Date.now();
+  const TEN_MINUTES = 10 * 60 * 1000;
+
+  // 2. فلتەرکردنی وێنە سڕاوەکان کە لەم دواییانەدا سڕدراونەتەوە (بۆ ئەوەی یەکسەر ون ببن پێش ئەوەی ImageKit ئیندێکسی بکات)
+  const deletedMap = gState.__recentDeletedImageIds ?? new Map();
+  if (deletedMap.size > 0) {
+    records = records.filter((r) => {
+      const delTime = deletedMap.get(r.id) ?? (r.fileId ? deletedMap.get(r.fileId) : undefined);
+      if (delTime !== undefined) {
+        // ئەگەر لە ماوەی 10 خولەکی پێشوودا سڕدرابێتەوە، لایببە
+        if (now - delTime < TEN_MINUTES) {
+          return false;
+        } else {
+          // ئەگەر کۆن بوو لە لیستەکە دەریدەکەین
+          deletedMap.delete(r.id);
+          if (r.fileId) deletedMap.delete(r.fileId);
+        }
+      }
+      return true;
+    });
   }
+
+  // 3. زیادکردنی وێنە تازەکان کە لەم دواییانەدا زیادکراون بەڵام ImageKit هێشتا نەیخستۆتە listFiles
+  const addedMap = gState.__recentAddedImages ?? new Map();
+  if (addedMap.size > 0) {
+    for (const [key, item] of addedMap.entries()) {
+      // ئەگەر کۆن بوو
+      if (now - item.timestamp > TEN_MINUTES) {
+        addedMap.delete(key);
+        continue;
+      }
+
+      // ئەگەر سڕدراوەتەوە لەم نێوەندەدا
+      if (deletedMap.has(item.record.id) || (item.record.fileId && deletedMap.has(item.record.fileId))) {
+        addedMap.delete(key);
+        continue;
+      }
+
+      // ئەگەر لە لیستی هێنراوەکاندا هەیە (کەواتە ImageKit چەسپاندوویەتی)
+      const exists = records.some(
+        (r) => r.id === item.record.id || (item.record.fileId && r.fileId === item.record.fileId)
+      );
+
+      if (exists) {
+        addedMap.delete(key);
+      } else {
+        // ئەگەر هێشتا لە لیستی ImageKit دا دەرنەکەوتووە، دەستبەجێ بیخە سەرەتای لیستەکە
+        records.unshift(item.record);
+      }
+    }
+  }
+
+  // نوێکردنەوەی بەکەپ
+  await writeBackupRecords(records);
+
+  return records;
 }
 
 export async function saveImage(
@@ -109,36 +197,65 @@ export async function saveImage(
     createdAt: new Date().toISOString(),
   };
 
-  // هەوڵدان بۆ نوێکردنەوەی data/images.json بۆ کاتی لۆکاڵ و بەکەپ
+  const now = Date.now();
+
+  // دەستبەجێ تۆمارکردن لە لیستی یادگە (Memory) بۆ ئەوەی بێ چاوەڕوانی دەربکەوێت
+  gState.__recentAddedImages?.set(record.id, { record, timestamp: now });
+  if (record.fileId) {
+    gState.__recentAddedImages?.set(record.fileId, { record, timestamp: now });
+    gState.__recentDeletedImageIds?.delete(record.fileId);
+  }
+  gState.__recentDeletedImageIds?.delete(record.id);
+
+  // هەروەها نوێکردنەوەی بەکەپی ناوخۆیی
   try {
-    const raw = await fs.readFile(DATA_FILE, "utf8");
-    const parsed = JSON.parse(raw) as ImageRecord[];
-    if (Array.isArray(parsed)) {
-      parsed.unshift(record);
-      await writeImages(parsed);
-    }
+    const current = await readBackupRecords();
+    current.unshift(record);
+    await writeBackupRecords(current);
   } catch {
-    // پەسەندکردنی بێدەنگ لە سێرڤەری ڤێرسڵ
+    // بێدەنگ
   }
 
   return record;
 }
 
 export async function deleteImage(id: string): Promise<boolean> {
-  let deleted = false;
+  const now = Date.now();
 
-  // 1. سڕینەوە لە ImageKit
+  // دەستبەجێ تۆمارکردنی لە لیستی سڕاوەکان لە یادگە بۆ ئەوەی ڕاستەوخۆ لە پەڕەکە لابرێت
+  gState.__recentDeletedImageIds?.set(id, now);
+  gState.__recentAddedImages?.delete(id);
+
+  let targetFileId = id;
+  let targetFilename: string | undefined;
+
+  // دۆزینەوەی لە لیستی بەکەپ یان لە ئەنجامەکان
   try {
-    const imagekit = getImageKit();
-    let targetFileId = id;
-
-    // دۆزینەوەی فایلەکە
-    const records = await listImages();
-    const target = records.find((r) => r.id === id || r.fileId === id);
-    if (target?.fileId) {
-      targetFileId = target.fileId;
+    const current = await readBackupRecords();
+    const target = current.find((r) => r.id === id || r.fileId === id);
+    if (target) {
+      if (target.fileId) {
+        targetFileId = target.fileId;
+        gState.__recentDeletedImageIds?.set(target.fileId, now);
+        gState.__recentAddedImages?.delete(target.fileId);
+      }
+      targetFilename = target.filename;
     }
 
+    // لادان لە بەکەپ
+    const remaining = current.filter(
+      (r) => r.id !== id && r.fileId !== id && r.id !== targetFileId && r.fileId !== targetFileId
+    );
+    await writeBackupRecords(remaining);
+  } catch {
+    // بێدەنگ
+  }
+
+  let deleted = false;
+
+  // سڕینەوە لە ImageKit
+  try {
+    const imagekit = getImageKit();
     if (targetFileId) {
       await imagekit.deleteFile(targetFileId);
       deleted = true;
@@ -147,27 +264,13 @@ export async function deleteImage(id: string): Promise<boolean> {
     console.error("هەڵە لە کاتی سڕینەوە لە ImageKit:", err);
   }
 
-  // 2. سڕینەوە لە فۆڵدەری ناوخۆیی (ئەگەر لەسەر کۆمپیوتەر بوو)
-  try {
-    const records = await listImages();
-    const target = records.find((r) => r.id === id || r.fileId === id);
-    if (target?.filename) {
-      await fs
-        .unlink(path.join(UPLOADS_DIR, target.filename))
-        .catch(() => undefined);
+  // سڕینەوە لە فۆڵدەری ناوخۆیی (ئەگەر لەسەر کۆمپیوتەر بوو)
+  if (targetFilename) {
+    try {
+      await fs.unlink(path.join(UPLOADS_DIR, targetFilename)).catch(() => undefined);
+    } catch {
+      // بێدەنگ
     }
-  } catch {
-    // بێدەنگ
-  }
-
-  // 3. نوێکردنەوە لە data/images.json ئەگەر نووسین بەردەست بێت
-  try {
-    const raw = await fs.readFile(DATA_FILE, "utf8");
-    const parsed = JSON.parse(raw) as ImageRecord[];
-    const remaining = parsed.filter((r) => r.id !== id && r.fileId !== id);
-    await writeImages(remaining);
-  } catch {
-    // بێدەنگ
   }
 
   return deleted;

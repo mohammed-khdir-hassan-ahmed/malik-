@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useActionState } from "react";
+import { useRouter } from "next/navigation";
 import { ImagePlus, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -17,10 +17,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { uploadImage, type UploadState } from "@/app/actions";
+import { uploadImage } from "@/app/actions";
 import type { Section } from "@/lib/images-types";
-
-const initialState: UploadState = { ok: false };
 
 export function AddImageDialog({
   section,
@@ -29,18 +27,43 @@ export function AddImageDialog({
   section: Section;
   label: string;
 }) {
+  const router = useRouter();
   const [open, setOpen] = React.useState(false);
-  const [state, formAction, pending] = useActionState(uploadImage, initialState);
+  const [pending, startTransition] = React.useTransition();
+  const [error, setError] = React.useState<string | null>(null);
+  const formRef = React.useRef<HTMLFormElement>(null);
 
-  React.useEffect(() => {
-    if (state.ok) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- داخستنی دیالۆگ دوای بارکردنی سەرکەوتوو
-      setOpen(false);
+  function handleOpenChange(nextOpen: boolean) {
+    setOpen(nextOpen);
+    if (!nextOpen) {
+      setError(null);
+      formRef.current?.reset();
     }
-  }, [state]);
+  }
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    const formData = new FormData(e.currentTarget);
+
+    startTransition(async () => {
+      try {
+        const res = await uploadImage({ ok: false }, formData);
+        if (res.ok) {
+          setOpen(false);
+          formRef.current?.reset();
+          router.refresh();
+        } else {
+          setError(res.error || "بارکردنی وێنەکە سەرکەوتوو نەبوو.");
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "هەڵەیەک ڕوویدا لە بارکردنی وێنە.");
+      }
+    });
+  }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger
         render={
           <Button size="sm" className="gap-1.5">
@@ -58,7 +81,7 @@ export function AddImageDialog({
             وێنەیەک هەڵبژێرە تا بگۆڕدرێت بۆ کۆڵەکەی {label}.
           </DialogDescription>
         </DialogHeader>
-        <form action={formAction} className="grid gap-4">
+        <form ref={formRef} onSubmit={handleSubmit} className="grid gap-4">
           <input type="hidden" name="section" value={section} />
           <div className="grid gap-2">
             <Label htmlFor={`image-${section}`}>وێنە</Label>
@@ -73,9 +96,9 @@ export function AddImageDialog({
               JPG، PNG، WEBP، AVIF یان GIF — زۆرترین قەبارە 8MB.
             </p>
           </div>
-          {state.ok === false && state.error ? (
+          {error ? (
             <p className="text-sm leading-relaxed text-destructive">
-              {state.error}
+              {error}
             </p>
           ) : null}
           <DialogFooter>
