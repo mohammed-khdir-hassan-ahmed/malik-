@@ -14,6 +14,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import {
+  getImageUrl,
   listImages,
   SECTION_LABELS,
   type Section,
@@ -131,7 +132,7 @@ async function DashboardContent() {
                           >
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
-                              src={`/uploads/${item.filename}`}
+                              src={getImageUrl(item)}
                               alt={`وێنە لە ${label}`}
                               loading="lazy"
                               className="aspect-square w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.05]"

@@ -6,6 +6,7 @@ import { Crown, Gem, Loader2 } from "lucide-react";
 import { ContactMenu } from "@/components/contact-menu";
 import { SECTION_ICONS } from "@/components/section-icons";
 import {
+  getImageUrl,
   listImages,
   SECTION_LABELS,
   type ImageRecord,
@@ -124,7 +125,7 @@ function Hero({
             {featured ? (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img
-                src={`/uploads/${featured.filename}`}
+                src={getImageUrl(featured)}
                 alt={`وێنەی هەڵبژاردە لە ${featuredLabel}`}
                 className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04] md:aspect-[5/5] lg:aspect-[4/4.6]"
               />
@@ -199,7 +200,7 @@ function GallerySection({
             <div className="overflow-hidden rounded-[4px]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={`/uploads/${item.filename}`}
+                src={getImageUrl(item)}
                 alt={`وێنەی دیکۆرات لە ${label}`}
                 className="aspect-[4/3] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.05]"
               />

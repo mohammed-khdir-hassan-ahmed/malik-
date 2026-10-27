@@ -1,6 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
+import { getImageKit } from "./imagekit";
 
 export type Section = "moroccan" | "astropol";
 
@@ -16,6 +17,8 @@ export interface ImageRecord {
   section: Section;
   filename: string;
   createdAt: string;
+  url?: string;
+  fileId?: string;
 }
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -32,6 +35,11 @@ export function isSection(value: string): value is Section {
 function sanitizeExtension(raw: string): string | null {
   const ext = raw.toLowerCase().replace(/[^\w]/g, "");
   return ALLOWED_EXTENSIONS.has(ext) ? ext : null;
+}
+
+export function getImageUrl(record: ImageRecord): string {
+  if (record.url) return record.url;
+  return `/uploads/${record.filename}`;
 }
 
 export async function listImages(): Promise<ImageRecord[]> {
@@ -59,16 +67,25 @@ export async function saveImage(
     throw new Error("فایل پەسەند نییە: تەنها JPG، PNG، WEBP، AVIF و GIF قەبوڵ دەکرێن.");
   }
 
+  const fileName = `${randomUUID()}.${ext}`;
+  const imagekit = getImageKit();
+
+  const uploadResult = await imagekit.upload({
+    file: buffer,
+    fileName,
+    folder: "/dekorat-malik",
+    useUniqueFileName: true,
+  });
+
   const records = await listImages();
   const record: ImageRecord = {
     id: randomUUID(),
     section,
-    filename: `${randomUUID()}.${ext}`,
+    filename: uploadResult.name || fileName,
+    url: uploadResult.url,
+    fileId: uploadResult.fileId,
     createdAt: new Date().toISOString(),
   };
-
-  await fs.mkdir(UPLOADS_DIR, { recursive: true });
-  await fs.writeFile(path.join(UPLOADS_DIR, record.filename), buffer);
 
   records.push(record);
   await writeImages(records);
@@ -81,9 +98,42 @@ export async function deleteImage(id: string): Promise<boolean> {
   if (!target) return false;
 
   const remaining = records.filter((r) => r.id !== id);
-  await fs
-    .unlink(path.join(UPLOADS_DIR, target.filename))
-    .catch(() => undefined);
+
+  // 1. سڕینەوە لە ImageKit
+  try {
+    const imagekit = getImageKit();
+
+    if (target.fileId) {
+      // ئەگەر وێنەکە بە سیستەمی نوێ دانرابوو و fileId هەبوو
+      await imagekit.deleteFile(target.fileId);
+    } else {
+      // ئەگەر وێنە کۆنەکان بوو کە fileIdیان لەگەڵدا پاشەکەوت نەکرابوو
+      const searchName = target.filename;
+      const baseName = searchName.substring(0, searchName.lastIndexOf(".")) || searchName;
+      
+      const foundFiles = await imagekit.listFiles({
+        searchQuery: `name = "${searchName}" OR name LIKE "${baseName}%"`,
+      });
+
+      if (Array.isArray(foundFiles) && foundFiles.length > 0) {
+        for (const file of foundFiles) {
+          if ("fileId" in file && file.fileId) {
+            await imagekit.deleteFile(file.fileId);
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.error("هەڵە لە کاتی سڕینەوە لە ImageKit:", err);
+  }
+
+  // 2. سڕینەوە لە فۆڵدەری ناوخۆیی (public/uploads) ئەگەر فایلەکە لەوێ بوو
+  if (target.filename) {
+    await fs
+      .unlink(path.join(UPLOADS_DIR, target.filename))
+      .catch(() => undefined);
+  }
+
   await writeImages(remaining);
   return true;
 }
