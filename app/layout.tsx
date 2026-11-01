@@ -7,6 +7,14 @@ export const metadata: Metadata = {
   title: "دیکۆراتی مەلیک",
   description:
     "دیکۆراتی مەلیک — شکۆی بۆشاییەکانت بە دیزاینی مەغریبی و ئەسترۆپۆڵ. ئاستێک لە جوانی کە شایستەی تۆیە.",
+  icons: {
+    icon: [
+      { url: "/logo/logo.png" },
+      { url: "/logo/logo.png", type: "image/png" },
+    ],
+    apple: "/logo/logo.png",
+    shortcut: "/logo/logo.png",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

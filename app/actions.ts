@@ -31,7 +31,7 @@ export async function login(
 
 export type UploadState = { ok: boolean; error?: string };
 
-const MAX_SIZE_BYTES = 8 * 1024 * 1024; // 8MB
+const MAX_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
 
 export async function uploadImage(
   _prevState: UploadState,
@@ -55,14 +55,14 @@ export async function uploadImage(
   }
 
   if (file.size > MAX_SIZE_BYTES) {
-    return { ok: false, error: "قەبارەی وێنە لە 8MB زیاترە." };
+    return { ok: false, error: "قەبارەی وێنە لە 50MB زیاترە." };
   }
 
   const extension = file.name.split(".").pop() ?? "";
   const buffer = Buffer.from(await file.arrayBuffer());
 
   try {
-    await saveImage(section, buffer, extension);
+    await saveImage(section, buffer, extension, file.type);
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "بارکردنی وێنەکە سەرکەوتوو نەبوو.";

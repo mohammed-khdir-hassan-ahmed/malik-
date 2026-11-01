@@ -28,11 +28,40 @@ if (!gState.__recentDeletedImageIds) {
 }
 
 // پێپەڕەکراوەکان: جۆرە پەسەندکراوەکان بۆ درێژکراوەی فایل
-const ALLOWED_EXTENSIONS = new Set(["jpg", "jpeg", "png", "webp", "avif", "gif"]);
+const ALLOWED_EXTENSIONS = new Set([
+  "jpg",
+  "jpeg",
+  "png",
+  "webp",
+  "avif",
+  "gif",
+  "heic",
+  "heif",
+  "jfif",
+  "bmp",
+  "tiff",
+  "svg",
+]);
 
-function sanitizeExtension(raw: string): string | null {
+function sanitizeExtension(raw: string, mimeType?: string): string {
   const ext = raw.toLowerCase().replace(/[^\w]/g, "");
-  return ALLOWED_EXTENSIONS.has(ext) ? ext : null;
+  if (ALLOWED_EXTENSIONS.has(ext)) return ext;
+
+  if (mimeType) {
+    const mime = mimeType.toLowerCase();
+    if (mime.includes("jpeg") || mime.includes("jpg")) return "jpg";
+    if (mime.includes("png")) return "png";
+    if (mime.includes("webp")) return "webp";
+    if (mime.includes("avif")) return "avif";
+    if (mime.includes("gif")) return "gif";
+    if (mime.includes("heic")) return "heic";
+    if (mime.includes("heif")) return "heif";
+    if (mime.includes("bmp")) return "bmp";
+    if (mime.includes("tiff")) return "tiff";
+    if (mime.includes("svg")) return "svg";
+  }
+
+  return "jpg";
 }
 
 async function readBackupRecords(): Promise<ImageRecord[]> {
@@ -170,13 +199,10 @@ export async function listImages(): Promise<ImageRecord[]> {
 export async function saveImage(
   section: Section,
   buffer: Buffer,
-  rawExtension: string
+  rawExtension: string,
+  mimeType?: string
 ): Promise<ImageRecord> {
-  const ext = sanitizeExtension(rawExtension);
-  if (!ext) {
-    throw new Error("فایل پەسەند نییە: تەنها JPG، PNG، WEBP، AVIF و GIF قەبوڵ دەکرێن.");
-  }
-
+  const ext = sanitizeExtension(rawExtension, mimeType);
   const fileName = `${randomUUID()}.${ext}`;
   const imagekit = getImageKit();
 

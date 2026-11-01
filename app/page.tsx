@@ -1,7 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Suspense } from "react";
 import { connection } from "next/server";
-import { Crown, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 import { ContactMenu } from "@/components/contact-menu";
 import { GalleryGrid } from "@/components/gallery-grid";
@@ -20,9 +21,23 @@ const BRAND = "دیکۆراتی مەلیك";
 
 function Brand() {
   return (
-    <Link href="/" aria-label={BRAND} className="flex items-center">
-      <span className="flex size-9 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-sm transition-transform hover:scale-105">
-        <Crown className="size-5" />
+    <Link
+      href="/"
+      aria-label={BRAND}
+      className="group flex items-center gap-2 -ms-1 sm:ms-0"
+    >
+      <div className="relative h-11 w-14 sm:h-13 sm:w-26 shrink-0 transition-transform duration-300 group-hover:scale-105">
+        <Image
+          src="/logo/logo.png"
+          alt={BRAND}
+          width={1009}
+          height={631}
+          priority
+          className="size-full object-contain object-right"
+        />
+      </div>
+      <span className="font-kurdish-display text-sm sm:text-lg font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">
+    
       </span>
     </Link>
   );
@@ -30,8 +45,8 @@ function Brand() {
 
 function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
-      <div className="flex h-16 w-full items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-md">
+      <div className="flex h-16 sm:h-20 w-full items-center justify-between ps-2 pe-4 sm:px-6 lg:px-8">
         <Brand />
         <ContactMenu />
       </div>

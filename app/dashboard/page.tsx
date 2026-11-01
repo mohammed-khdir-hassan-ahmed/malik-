@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { connection } from "next/server";
-import { Crown, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 import { AddImageDialog } from "@/components/add-image-dialog";
 import { DeleteImageButton } from "@/components/delete-image-button";
@@ -70,17 +72,34 @@ async function DashboardContent() {
 
   return (
     <div className="flex min-h-svh flex-col">
-      {/* هیدەری سادە — تەنها براند */}
-      <header className="border-b border-border">
-        <div className="mx-auto flex h-14 max-w-5xl items-center px-4 sm:px-6">
-          <span className="flex items-center gap-2.5">
-            <span className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <Crown className="size-4" />
-            </span>
-            <span className="font-kurdish-display text-base font-bold tracking-tight">
-              داشبۆرد
-            </span>
-          </span>
+      {/* هیدەری داشبۆرد بە لۆگۆی فەرمی */}
+      <header className="border-b border-border bg-background/85 backdrop-blur sticky top-0 z-30">
+        <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4 sm:px-6">
+          <Link href="/" className="flex items-center gap-2.5 transition-transform hover:opacity-90">
+            <div className="relative size-10 overflow-hidden rounded-xl border border-border/60 bg-background shadow-sm">
+              <Image
+                src="/logo/logo.png"
+                alt="دیکۆراتی مەلیک"
+                width={40}
+                height={40}
+                className="size-full object-contain p-0.5"
+              />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-kurdish-display text-base font-bold tracking-tight text-foreground">
+                داشبۆردی دیکۆراتی مەلیک
+              </span>
+              <span className="text-[11px] text-muted-foreground">
+                بەڕێوەبردنی وێنەکان
+              </span>
+            </div>
+          </Link>
+          <Link
+            href="/"
+            className="rounded-lg border border-border/70 px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
+          >
+            ماڵپەڕی سەرەکی
+          </Link>
         </div>
       </header>
 

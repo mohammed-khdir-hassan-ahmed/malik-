@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { Crown } from "lucide-react";
 
 import { SECTION_ICONS } from "@/components/section-icons";
@@ -37,9 +38,17 @@ export function HeroAnimatedImage({ images }: HeroAnimatedImageProps) {
           className="animate-offset-frame absolute -bottom-3 -start-3 hidden h-full w-full rounded-md border border-primary sm:block"
         />
         <div className="group relative z-0 block rounded-md border border-border bg-card p-1.5 sm:p-2 shadow-sm">
-          <div className="flex aspect-[3/4] flex-col items-center justify-center gap-2 rounded-[5px] bg-muted/50 text-muted-foreground sm:aspect-[4/3] md:aspect-[5/5]">
-            <Crown className="size-8 opacity-40" />
-            <p className="text-xs">وێنەکە بەم زووانە دادەنرێت</p>
+          <div className="flex aspect-[3/4] flex-col items-center justify-center gap-2.5 rounded-[5px] bg-muted/50 text-muted-foreground sm:aspect-[4/3] md:aspect-[5/5]">
+            <div className="relative size-16 overflow-hidden rounded-xl border border-border/50 bg-background/60 p-1 shadow-sm">
+              <Image
+                src="/logo/logo.png"
+                alt="دیکۆراتی مەلیک"
+                width={64}
+                height={64}
+                className="size-full object-contain"
+              />
+            </div>
+            <p className="text-xs font-medium">وێنەکە بەم زووانە دادەنرێت</p>
           </div>
         </div>
       </div>

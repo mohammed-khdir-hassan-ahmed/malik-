@@ -1,14 +1,16 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { useActionState } from "react";
 import {
-  Crown,
   Eye,
   EyeOff,
   KeyRound,
   Loader2,
+  LogIn,
   Mail,
+  ShieldCheck,
   TriangleAlert,
 } from "lucide-react";
 
@@ -31,24 +33,32 @@ export function LoginForm() {
   const [showPassword, setShowPassword] = React.useState(false);
 
   return (
-    <Card className="w-full shadow-sm">
-      <CardHeader className="items-center gap-3 text-center">
-        <span className="flex size-14 items-center justify-center rounded-none bg-primary text-primary-foreground shadow-sm">
-          <Crown className="size-6" />
-        </span>
-        <CardTitle className="font-kurdish-display text-xl font-bold">
-          چوونەژوورەوە بۆ داشبۆرد
-        </CardTitle>
-        <CardDescription>
-          ئیمەیڵ و وشەی نهێنی بنووسە بۆ بەڕێوبردنی وێنەکان
-        </CardDescription>
+    <Card className="w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-border/80 bg-card/95 shadow-xl backdrop-blur-md">
+      {/* هێڵێکی ناسک بە ڕەنگی براند لە سەرووی کاردەکە */}
+ 
+
+      <CardHeader className="items-center gap-3 px-5 pt-7 pb-4 text-center sm:px-8 sm:pt-8">
+   
+
+        <div className="space-y-1.5">
+          <CardTitle className="font-kurdish-display text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+            دیکۆراتی مەلیک
+          </CardTitle>
+          <CardDescription className="text-xs sm:text-sm leading-relaxed text-muted-foreground">
+            چوونەژوورەوەی سەرپەرشتیار بۆ بەڕێوەبردنی وێنەکانی پڕۆژە
+          </CardDescription>
+        </div>
       </CardHeader>
-      <CardContent>
-        <form action={formAction} className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="email">ئیمەیڵ</Label>
+
+      <CardContent className="px-5 pb-7 sm:px-8 sm:pb-8">
+        <form action={formAction} className="grid gap-4 sm:gap-5">
+          {/* بەشی ئیمەیڵ */}
+          <div className="grid gap-2 text-right">
+            <Label htmlFor="email" className="text-xs sm:text-sm font-medium text-foreground/90">
+              ئیمەیڵ
+            </Label>
             <div className="relative">
-              <Mail className="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Mail className="pointer-events-none absolute top-1/2 start-3.5 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 id="email"
                 name="email"
@@ -57,14 +67,19 @@ export function LoginForm() {
                 autoComplete="username"
                 inputMode="email"
                 dir="ltr"
-                className="ps-9"
+                placeholder="name@example.com"
+                className="h-11 sm:h-12 ps-10 rounded-xl border-border/80 bg-background/70 text-sm transition-all focus-visible:border-primary focus-visible:ring-primary/20"
               />
             </div>
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">وشەی نهێنی</Label>
+
+          {/* بەشی وشەی نهێنی */}
+          <div className="grid gap-2 text-right">
+            <Label htmlFor="password" className="text-xs sm:text-sm font-medium text-foreground/90">
+              وشەی نهێنی
+            </Label>
             <div className="relative">
-              <KeyRound className="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
+              <KeyRound className="pointer-events-none absolute top-1/2 start-3.5 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 id="password"
                 name="password"
@@ -72,7 +87,8 @@ export function LoginForm() {
                 required
                 autoComplete="current-password"
                 dir="ltr"
-                className="px-9"
+                placeholder="••••••••"
+                className="h-11 sm:h-12 px-10 rounded-xl border-border/80 bg-background/70 text-sm transition-all focus-visible:border-primary focus-visible:ring-primary/20"
               />
               <button
                 type="button"
@@ -80,7 +96,7 @@ export function LoginForm() {
                 aria-label={
                   showPassword ? "شاردنەوەی وشەی نهێنی" : "پیشاندانی وشەی نهێنی"
                 }
-                className="absolute top-1/2 end-1.5 flex size-7 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                className="absolute top-1/2 end-2 flex size-8 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:scale-95 cursor-pointer"
               >
                 {showPassword ? (
                   <EyeOff className="size-4" />
@@ -90,16 +106,36 @@ export function LoginForm() {
               </button>
             </div>
           </div>
+
+          {/* پەیامی هەڵە لەکاتی هەبوونی هەڵە */}
           {state.error ? (
-            <p className="flex items-start gap-1.5 text-sm leading-relaxed text-destructive">
+            <div className="flex items-start gap-2.5 rounded-xl border border-destructive/25 bg-destructive/10 p-3 text-xs sm:text-sm leading-relaxed text-destructive animate-in fade-in slide-in-from-top-1 duration-200">
               <TriangleAlert className="mt-0.5 size-4 shrink-0" />
-              {state.error}
-            </p>
+              <span>{state.error}</span>
+            </div>
           ) : null}
-          <Button type="submit" size="lg" disabled={pending} className="w-full">
-            {pending ? <Loader2 className="animate-spin" /> : <Crown />}
-            چوونەژوورەوە
+
+          {/* دوگمەی چوونەژوورەوە */}
+          <Button
+            type="submit"
+            size="lg"
+            disabled={pending}
+            className="h-11 sm:h-12 w-full gap-2 rounded-xl bg-primary text-sm sm:text-base font-semibold text-primary-foreground shadow-md transition-all duration-200 hover:bg-primary/90 hover:shadow-lg active:scale-[0.99] font-kurdish cursor-pointer"
+          >
+            {pending ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                خەریکی چوونەژوورەوەیە...
+              </>
+            ) : (
+              <>
+                <LogIn className="size-4" />
+                چوونەژوورەوە
+              </>
+            )}
           </Button>
+
+        
         </form>
       </CardContent>
     </Card>

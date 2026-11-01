@@ -1,7 +1,8 @@
 "use client";
 
 import type { ElementType } from "react";
-import { Crown, MapPin, Navigation, Phone, X } from "lucide-react";
+import Image from "next/image";
+import { MapPin, Phone, X } from "lucide-react";
 
 import {
   FacebookIcon,
@@ -20,8 +21,6 @@ import {
 } from "@/components/ui/dialog";
 import {
   FACEBOOK_URL,
-  MAP_URL,
-  SHOP_ADDRESS,
   SHOP_PHONE,
   SNAPCHAT_URL,
   TIKTOK_URL,
@@ -88,7 +87,7 @@ export function ContactMenu() {
         className="w-[min(26rem,calc(100vw-2rem))] max-h-[92vh] overflow-y-auto p-0 rounded-2xl bg-primary text-primary-foreground border-white/20 shadow-2xl font-kurdish gap-0"
       >
         <div>
-          {/* سەرەوە — وێنەی پێشانگا لەگەڵ دوگمەی داخستن */}
+          {/* سەرەوە — وێنەی پێشانگا (hama.jpg) لەگەڵ دوگمەی داخستن */}
           <div className="relative h-44 w-full sm:h-52 overflow-hidden bg-black/20">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -113,10 +112,16 @@ export function ContactMenu() {
               }
             />
 
-            {/* نیشان و ناوی براند لەسەر وێنەکە */}
+            {/* نیشان و ناوی براند لەسەر وێنەکە — تەنها خودی لۆگۆکە بێ باکگراوەندی سپی */}
             <div className="absolute bottom-3 start-4 end-4 z-10 flex items-center gap-2.5">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/20 text-white shadow-sm backdrop-blur-md border border-white/30">
-                <Crown className="size-5" />
+              <span className="relative  flex size-20 sm:size-16 shrink-0 items-center justify-center">
+                <Image
+                  src="/logo/logo.png"
+                  alt="دیکۆراتی مەلیک"
+                  width={64}
+                  height={64}
+                  className="size-full object-contain drop-shadow-lg rounded-full"
+                />
               </span>
               <div className="min-w-0 flex-1">
                 <DialogTitle className="font-kurdish-display text-base font-bold text-white leading-tight drop-shadow-sm">
@@ -131,14 +136,13 @@ export function ContactMenu() {
 
           {/* بەشەکانی زانیاری و پەیوەندی */}
           <div className="p-4 space-y-3">
-            {/* کارتی ناونیشان + نەخشە */}
-            
+        
 
-            {/* ژمارەی تەلەفۆن — لە هەمان ئاستی ئاسۆیی */}
+            {/* ژمارەی تەلەفۆن */}
             <a
               href={`tel:${SHOP_PHONE.replace(/\s/g, "")}`}
               aria-label={`پەیوەندیکردن بە ${SHOP_PHONE}`}
-              className="group flex items-center justify-between gap-3 rounded-xl border border-white/15 bg-white/10 p-3.5 backdrop-blur-sm transition-colors hover:bg-white/[0.14]"
+              className="group flex items-center justify-between gap-3 rounded-xl border border-white/15 bg-white/10 p-3.5 backdrop-blur-sm transition-colors hover:bg-white/[0.16]"
             >
               <div className="flex items-center gap-2.5">
                 <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/20 text-white border border-white/20 transition-transform group-hover:scale-105">
@@ -199,7 +203,6 @@ export function ContactMenu() {
                     type="button"
                     className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/15 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/25 active:scale-[0.98] cursor-pointer"
                   >
-                   
                     داخستن
                   </button>
                 }
