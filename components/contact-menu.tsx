@@ -114,15 +114,7 @@ export function ContactMenu() {
 
             {/* نیشان و ناوی براند لەسەر وێنەکە — تەنها خودی لۆگۆکە بێ باکگراوەندی سپی */}
             <div className="absolute bottom-3 start-4 end-4 z-10 flex items-center gap-2.5">
-              <span className="relative  flex size-20 sm:size-16 shrink-0 items-center justify-center">
-                <Image
-                  src="/logo/logo.png"
-                  alt="دیکۆراتی مەلیک"
-                  width={64}
-                  height={64}
-                  className="size-full object-contain drop-shadow-lg"
-                />
-              </span>
+            
               <div className="min-w-0 flex-1">
                 <DialogTitle className="font-kurdish-display text-base font-bold text-white leading-tight drop-shadow-sm">
                   دیکۆراتی مەلیک

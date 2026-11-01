@@ -26,7 +26,7 @@ function Brand() {
       aria-label={BRAND}
       className="group flex items-center gap-2 -ms-1 sm:ms-0"
     >
-      <div className="relative h-11 w-14 sm:h-13 sm:w-26 shrink-0 transition-transform duration-300 group-hover:scale-105">
+      <div className=" relative h-11 w-14 sm:h-13 sm:w-26 shrink-0 transition-transform duration-300 group-hover:scale-105">
         <Image
           src="/logo/logo.png"
           alt={BRAND}
