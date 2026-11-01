@@ -47,9 +47,6 @@ export function GalleryGrid({ section, items }: GalleryGridProps) {
   // دۆخی وێنەی کراوە لە مۆداڵدا
   const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
 
-  // کاردی دەستلێدراو/ئەکتیڤ لەسەر مۆبایل بۆ نیشاندانی تیرەکان تەنها لەکاتی دەستلێدان
-  const [activeCardIdx, setActiveCardIdx] = React.useState<number | null>(null);
-
   // دۆخی هەر کاردێک بە جیاواز بۆ گۆڕینی وێنە لەسەر خودی کاردەکە
   const [cardIndices, setCardIndices] = React.useState<Record<number, number>>({});
 
@@ -97,25 +94,6 @@ export function GalleryGrid({ section, items }: GalleryGridProps) {
       };
     });
   }
-
-  // شاردنەوەی تیرەکانی مۆبایل کاتێک دەست لە دەرەوەی کاردەکان دەدرێت
-  React.useEffect(() => {
-    if (activeCardIdx === null) return;
-
-    function handleClickOutside(e: MouseEvent | TouchEvent) {
-      const target = e.target as HTMLElement | null;
-      if (!target?.closest("[data-gallery-card]")) {
-        setActiveCardIdx(null);
-      }
-    }
-
-    document.addEventListener("touchstart", handleClickOutside);
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("touchstart", handleClickOutside);
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [activeCardIdx]);
 
   // بەڕێوەبردنی کلیکەکانی کیبۆرد (تیری چەپ و ڕاست بۆ گەڕان لە مۆداڵ)
   React.useEffect(() => {
@@ -165,22 +143,9 @@ export function GalleryGrid({ section, items }: GalleryGridProps) {
           const currentItemIdx = cardIndices[cardIdx] ?? cardIdx;
           const item = items[currentItemIdx] ?? items[cardIdx];
           const itemCode = uniqueCodes.get(item.id) ?? `#${100 + cardIdx}`;
-          const isCardActive = activeCardIdx === cardIdx;
 
           function handleCardClick() {
-            // لەسەر مۆبایل: یەکەم دەستلێدان تیرەکان (< و >) دەردەخات، دووەم دەستلێدان مۆداڵەکە دەکاتەوە
-            const isTouchScreen =
-              typeof window !== "undefined" &&
-              (window.matchMedia("(hover: none)").matches || window.innerWidth < 640);
-
-            if (isTouchScreen) {
-              if (!isCardActive) {
-                setActiveCardIdx(cardIdx);
-                return;
-              }
-            }
-
-            // لەسەر کۆمپیوتەر یان کاتێک پێشتر دەستی لێدراوە
+            // کردنەوەی یەکسەری کارد لەسەر مۆبایل و کۆمپیوتەر تەنها بە یەک کلیک
             setSelectedIndex(currentItemIdx);
           }
 
@@ -189,9 +154,7 @@ export function GalleryGrid({ section, items }: GalleryGridProps) {
               key={cardIdx}
               data-gallery-card="true"
               onClick={handleCardClick}
-              className={`group relative cursor-pointer overflow-hidden rounded-xl border bg-card p-1.5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg ${
-                isCardActive ? "border-primary ring-2 ring-primary/25 shadow-md -translate-y-0.5" : "border-border"
-              }`}
+              className="group relative cursor-pointer overflow-hidden rounded-xl border border-border bg-card p-1.5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg active:scale-[0.98]"
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
@@ -218,7 +181,7 @@ export function GalleryGrid({ section, items }: GalleryGridProps) {
                   loading="lazy"
                 />
 
-                {/* دوگمەی < لەلای چەپ بۆ گۆڕینی وێنەی کاردەکە — بۆ مۆبایل تەنها کاتێک دەستی لێدرا دەردەکەوێت */}
+                {/* دوگمەی گۆڕینی وێنەی کاردەکە لە هۆڤەردا (پێشوو) */}
                 <button
                   type="button"
                   onClick={(e) => {
@@ -227,16 +190,12 @@ export function GalleryGrid({ section, items }: GalleryGridProps) {
                   }}
                   aria-label="وێنەی پێشوو"
                   title="وێنەی پێشوو"
-                  className={`absolute start-1.5 top-1/2 -translate-y-1/2 z-20 flex size-7 sm:size-8 items-center justify-center rounded-full bg-black/70 text-white backdrop-blur-sm border border-white/25 shadow-lg transition-all duration-200 hover:bg-black/90 hover:scale-110 active:scale-90 cursor-pointer ${
-                    isCardActive
-                      ? "opacity-100 pointer-events-auto scale-100"
-                      : "opacity-0 pointer-events-none sm:pointer-events-auto sm:group-hover:opacity-100"
-                  }`}
+                  className="absolute start-1.5 top-1/2 -translate-y-1/2 z-20 flex size-7 sm:size-8 items-center justify-center rounded-full bg-black/70 text-white backdrop-blur-sm border border-white/25 shadow-lg transition-all duration-200 hover:bg-black/90 hover:scale-110 active:scale-90 cursor-pointer opacity-0 pointer-events-none sm:group-hover:opacity-100 sm:pointer-events-auto"
                 >
-                  <ChevronLeft className="size-4 sm:size-4.5" />
+                  <ChevronRight className="size-4 sm:size-4.5" />
                 </button>
 
-                {/* دوگمەی > لەلای ڕاست بۆ گۆڕینی وێنەی کاردەکە — بۆ مۆبایل تەنها کاتێک دەستی لێدرا دەردەکەوێت */}
+                {/* دوگمەی گۆڕینی وێنەی کاردەکە لە هۆڤەردا (دواتر) */}
                 <button
                   type="button"
                   onClick={(e) => {
@@ -245,26 +204,14 @@ export function GalleryGrid({ section, items }: GalleryGridProps) {
                   }}
                   aria-label="وێنەی دواتر"
                   title="وێنەی دواتر"
-                  className={`absolute end-1.5 top-1/2 -translate-y-1/2 z-20 flex size-7 sm:size-8 items-center justify-center rounded-full bg-black/70 text-white backdrop-blur-sm border border-white/25 shadow-lg transition-all duration-200 hover:bg-black/90 hover:scale-110 active:scale-90 cursor-pointer ${
-                    isCardActive
-                      ? "opacity-100 pointer-events-auto scale-100"
-                      : "opacity-0 pointer-events-none sm:pointer-events-auto sm:group-hover:opacity-100"
-                  }`}
+                  className="absolute end-1.5 top-1/2 -translate-y-1/2 z-20 flex size-7 sm:size-8 items-center justify-center rounded-full bg-black/70 text-white backdrop-blur-sm border border-white/25 shadow-lg transition-all duration-200 hover:bg-black/90 hover:scale-110 active:scale-90 cursor-pointer opacity-0 pointer-events-none sm:group-hover:opacity-100 sm:pointer-events-auto"
                 >
                   <ChevronLeft className="size-4 sm:size-4.5" />
                 </button>
 
-                {/* نیشانەی بینین لەکاتی هۆڤەر یان کاتی ئەکتیڤ بوون لە مۆبایل */}
+                {/* نیشانەی بینین لەکاتی هۆڤەر */}
                 <div
-                  className={`absolute inset-0 flex items-center justify-center bg-black/25 backdrop-blur-[1px] transition-opacity duration-300 ${
-                    isCardActive
-                      ? "opacity-100 pointer-events-auto"
-                      : "opacity-0 pointer-events-none sm:group-hover:opacity-100"
-                  }`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedIndex(currentItemIdx);
-                  }}
+                  className="absolute inset-0 flex items-center justify-center bg-black/25 backdrop-blur-[1px] transition-opacity duration-300 opacity-0 pointer-events-none sm:group-hover:opacity-100"
                 >
                   <span className="flex size-9 items-center justify-center rounded-full bg-white/95 text-primary shadow-lg transition-transform duration-300 hover:scale-110 active:scale-95 cursor-pointer">
                     <Maximize2 className="size-4" />
@@ -301,16 +248,11 @@ export function GalleryGrid({ section, items }: GalleryGridProps) {
                 {label} - {activeItemCode}
               </DialogTitle>
 
-              {/* سەرپەڕەی زانیاری: ژمارەی کارد و ژمارەی وێنەکان */}
+              {/* سەرپەڕەی زانیاری: ژمارەی وێنەکان و دوگمەی داخستن */}
               <div className="mb-2 flex w-full items-center justify-between px-2 text-white">
-                <div className="flex items-center gap-2">
-                  <span className="flex items-center gap-1 rounded-full border border-white/25 bg-black/60 px-3 py-0.5 text-xs font-mono font-bold text-white shadow-md backdrop-blur-md">
-                    {activeItemCode}
-                  </span>
-                  <span className="text-xs font-medium text-white/80">
-                    {(selectedIndex ?? 0) + 1} لە {items.length}
-                  </span>
-                </div>
+                <span className="flex items-center gap-1 rounded-full border border-white/20 bg-black/60 px-3 py-1 text-xs font-medium text-white/90 shadow-md backdrop-blur-md">
+                  {(selectedIndex ?? 0) + 1} لە {items.length}
+                </span>
 
                 <DialogClose
                   render={
@@ -326,16 +268,23 @@ export function GalleryGrid({ section, items }: GalleryGridProps) {
                 />
               </div>
 
-              {/* کۆنتێنەری وێنەکە لەگەڵ دوگمەکانی لای ڕاست و چەپ */}
+              {/* کۆنتێنەری وێنەکە لەگەڵ ژمارە هەڕەمەکییەکە لەناو ڕسمەکە و دوگمەکانی لای ڕاست و چەپ */}
               <div className="relative inline-block max-w-[94vw] max-h-[78vh]">
+                {/* ژمارەی دیزاینکراوی کاردەکە لەناو خودی ڕسمەکە */}
+                <div className="absolute top-2.5 start-2.5 sm:top-3.5 sm:start-3.5 z-30 flex items-center gap-1 rounded-full border border-white/35 bg-black/70 px-2.5 sm:px-3.5 py-0.5 sm:py-1 shadow-lg backdrop-blur-md">
+                  <span className="font-mono text-xs sm:text-sm font-bold tracking-wider text-white">
+                    {activeItemCode}
+                  </span>
+                </div>
+
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={getImageUrl(activeItem)}
                   alt={`وێنەی دیکۆرات لە ${label} - ${activeItemCode}`}
-                  className="max-h-[76vh] max-w-[92vw] w-auto h-auto rounded-2xl object-contain shadow-2xl ring-1 ring-white/20"
+                  className="block max-h-[76vh] max-w-[92vw] w-auto h-auto rounded-2xl object-contain shadow-2xl ring-1 ring-white/20"
                 />
 
-                {/* دوگمەی < لەلای چەپ */}
+                {/* دوگمەی پێشوو */}
                 <button
                   type="button"
                   onClick={(e) => {
@@ -349,7 +298,7 @@ export function GalleryGrid({ section, items }: GalleryGridProps) {
                   <ChevronRight className="size-5 sm:size-6" />
                 </button>
 
-                {/* دوگمەی > لەلای ڕاست */}
+                {/* دوگمەی دواتر */}
                 <button
                   type="button"
                   onClick={(e) => {

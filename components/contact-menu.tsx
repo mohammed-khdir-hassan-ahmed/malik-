@@ -120,7 +120,7 @@ export function ContactMenu() {
                   alt="دیکۆراتی مەلیک"
                   width={64}
                   height={64}
-                  className="size-full object-contain drop-shadow-lg rounded-full"
+                  className="size-full object-contain drop-shadow-lg"
                 />
               </span>
               <div className="min-w-0 flex-1">
