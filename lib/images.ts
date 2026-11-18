@@ -112,7 +112,9 @@ export async function listImages(): Promise<ImageRecord[]> {
         if ("fileId" in file && "url" in file) {
           let section: Section = "moroccan";
           const tags = Array.isArray(file.tags) ? file.tags : [];
-          if (tags.includes("astropol")) {
+          if (tags.includes("painting")) {
+            section = "painting";
+          } else if (tags.includes("astropol")) {
             section = "astropol";
           } else if (tags.includes("moroccan")) {
             section = "moroccan";

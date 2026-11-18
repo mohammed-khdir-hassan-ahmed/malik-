@@ -31,7 +31,7 @@ export function HeroSectionChips({
       className={
         className ??
         (isRow
-          ? "flex w-full max-w-md flex-row items-center justify-center gap-2 sm:gap-3"
+          ? "grid w-full max-w-md grid-cols-2 items-center gap-2 sm:flex sm:flex-row sm:justify-center sm:gap-3"
           : "flex w-full max-w-md flex-col gap-1.5 sm:gap-2.5")
       }
     >
@@ -47,7 +47,7 @@ export function HeroSectionChips({
             onClick={(e) => handleClick(e, section)}
             className={
               isRow
-                ? "group flex h-9 flex-1 min-w-0 items-center justify-center gap-1.5 rounded-md bg-primary px-3 text-xs font-medium text-primary-foreground shadow-sm transition-all duration-200 hover:shadow-md hover:bg-primary/90 sm:h-10 sm:gap-2 sm:px-4 sm:text-sm cursor-pointer"
+                ? "group flex h-10 min-w-0 items-center justify-center gap-1.5 rounded-md bg-primary px-2.5 text-[11px] font-medium text-primary-foreground shadow-sm transition-all duration-200 hover:shadow-md hover:bg-primary/90 cursor-pointer last:col-span-2 sm:h-10 sm:flex-1 sm:gap-2 sm:px-4 sm:text-sm"
                 : isLead
                   ? "group flex h-7.5 min-w-0 items-center justify-center gap-1.5 rounded-md bg-primary px-2.5 text-[12px] font-medium text-primary-foreground shadow-sm transition-all duration-200 hover:shadow-md sm:h-9 sm:gap-2 sm:px-4 sm:text-sm cursor-pointer"
                   : "group flex h-7.5 min-w-0 items-center justify-center gap-1.5 rounded-md border border-border bg-background px-2.5 text-[12px] font-medium transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5 hover:text-primary sm:h-9 sm:gap-2 sm:px-4 sm:text-sm cursor-pointer"

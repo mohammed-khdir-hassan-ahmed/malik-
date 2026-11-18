@@ -33,7 +33,7 @@ function DashboardSkeleton() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
       <div className="grid gap-5 lg:grid-cols-2">
-        {[0, 1].map((i) => (
+        {[0, 1, 2].map((i) => (
           <div key={i} className="rounded-md border border-border">
             <div className="flex h-16 items-center gap-3 border-b border-border bg-muted/25 px-4">
               <div className="size-10 animate-pulse rounded-md bg-muted" />

@@ -1,10 +1,11 @@
-export type Section = "moroccan" | "astropol";
+export type Section = "moroccan" | "astropol" | "painting";
 
-export const SECTIONS: Section[] = ["moroccan", "astropol"];
+export const SECTIONS: Section[] = ["moroccan", "astropol", "painting"];
 
 export const SECTION_LABELS: Record<Section, string> = {
   moroccan: "بەشی مەغریبی",
   astropol: "بەشی ئەسترۆپۆڵ",
+  painting: "بەشی بۆیاغکردن",
 };
 
 export interface ImageRecord {

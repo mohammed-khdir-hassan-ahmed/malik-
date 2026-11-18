@@ -138,10 +138,12 @@ async function HomeContent() {
 
   const moroccan = images.filter((i) => i.section === "moroccan");
   const astropol = images.filter((i) => i.section === "astropol");
+  const painting = images.filter((i) => i.section === "painting");
 
   const counts: Record<Section, number> = {
     moroccan: moroccan.length,
     astropol: astropol.length,
+    painting: painting.length,
   };
   const chips = (Object.entries(counts) as Array<[Section, number]>).filter(
     ([, count]) => count > 0
@@ -160,6 +162,7 @@ async function HomeContent() {
           )}
           <GallerySection section="moroccan" items={moroccan} index={1} />
           <GallerySection section="astropol" items={astropol} index={2} />
+          <GallerySection section="painting" items={painting} index={3} />
         </div>
       </main>
       <ScrollToTop />
